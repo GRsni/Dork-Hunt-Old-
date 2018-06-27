@@ -27,52 +27,70 @@ class Duck {
   void show() {
     pushStyle();
     if (y+(w*1/d)<height-250) {
-      fCount++;
+      if (frameCount%15==0) { 
+        fCount++;
+      }
       if (!alive) {
         pushMatrix();
-       
+
         translate(x+w/d/2, y+w/d/2);
         tint(255, alpha);
         alpha-=int(255/35);
-         rotate(rotation);
-        
+        rotate(rotation);
 
-        image(dorkExp, -w/d/2,-w/d/2, w/d, w/d);
+
+        image(dorkExp, -w/d/2, -w/d/2, w/d, w/d);
         popMatrix();
       } else {
         if (dir>0) {//left
-          if (flapA) {
-            if (lives==1) {
-              image(flapAleft, x, y, w/d, w/d);
-            } else {
-              tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
-              image(flapAleft, x, y, w/d, w/d);
-            }
-          } else if (!flapA) {
-            if (lives==1) {
 
-              image(flapBleft, x, y, w/d, w/d);
-            } else {
-              tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
-              image(flapBleft, x, y, w/d, w/d);
-            }
+          int frameIndex=fCount%4;
+          if (lives==1) {
+            image(dorkFrameLeft[frameIndex], x, y, w/d, w/d);
+          } else {
+            tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+            image(dorkFrameLeft[frameIndex], x, y, w/d, w/d);
           }
+          //if (flapA) {
+          //  if (lives==1) {
+          //    image(flapAleft, x, y, w/d, w/d);
+          //  } else {
+          //    tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+          //    image(flapAleft, x, y, w/d, w/d);
+          //  }
+          //} else if (!flapA) {
+          //  if (lives==1) {
+
+          //    image(flapBleft, x, y, w/d, w/d);
+          //  } else {
+          //    tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+          //    image(flapBleft, x, y, w/d, w/d);
+          //  }
+          //}
         } else {//right
-          if (flapA) {
-            if (lives==1) {
-              image(flapAright, x, y, w/d, w/d);
-            } else {
-              tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
-              image(flapAright, x, y, w/d, w/d);
-            }
-          } else if (!flapA) {
-            if (lives==1) {
-              image(flapBright, x, y, w/d, w/d);
-            } else {
-              tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
-              image(flapBright, x, y, w/d, w/d);
-            }
+          int frameIndex=fCount%4;
+          println(frameIndex);
+          if (lives==1) {
+            image(dorkFrameRight[frameIndex], x, y, w/d, w/d);
+          } else {
+            tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+            image(dorkFrameRight[frameIndex], x, y, w/d, w/d);
           }
+          //if (flapA) {
+          //  if (lives==1) {
+          //    image(flapAright, x, y, w/d, w/d);
+          //  } else {
+          //    tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+          //    image(flapAright, x, y, w/d, w/d);
+          //  }
+          //} else if (!flapA) {
+          //  if (lives==1) {
+          //    image(flapBright, x, y, w/d, w/d);
+          //  } else {
+          //    tint(map(lives, 2, 3, 200, 150), map(lives, 2, 3, 80, 108), 0);
+          //    image(flapBright, x, y, w/d, w/d);
+          //  }
+          //}
         }
       }
     }
@@ -94,8 +112,7 @@ class Duck {
       y+=speed.y*wActivation;
       speed.y+=grav*wActivation;
       d+=.01*wActivation;
-    }
-    else{
+    } else {
       speed.y+=grav*2;
       y+=speed.y;
     }

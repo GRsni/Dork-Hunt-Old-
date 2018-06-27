@@ -7,7 +7,8 @@ void saveScores() {
       aux[i]=str(scoreNum[floor(i/2)]);
     }
   }
-  if (!flags[1]) {
+  //if (!flags[1]) {
+  if (!flagsjson.getString("difficulty").equals("high")) {
     highScoresEasy[1]=join(aux, '-');
 
     saveStrings("data/info/highscoresEasy.txt", highScoresEasy);
@@ -27,6 +28,12 @@ void resetScoresEasy() {
 void resetScoresHard() {
   String aux[]={"", "...-0-...-0-...-0-...-0-...-0-...-0-...-0-...-0-...-0-...-0"};
   saveStrings("data/info/highscoresHard.txt", aux);
+}
+
+
+void loadJSONflags() {
+  flagsjson=loadJSONObject("data/info/flagsj.json");
+  println(flagsjson.getInt("cursor type"));
 }
 
 void loadFlags() {
@@ -124,6 +131,7 @@ void drawHighScores(int scl, float X, float Y) {
   }
   popStyle();
 }
+
 void loadStuff() {
 
 
@@ -144,10 +152,16 @@ void loadStuff() {
   desktop= loadImage("art/desktop.png");
   desktop.resize(width, 250);
   scoreboard= loadImage("art/scoreboard.png");
-  flapAright= loadImage("art/flapAright.png");
-  flapBright= loadImage("art/flapBright.png");
-  flapAleft= loadImage("art/flapAleft.png");
-  flapBleft= loadImage("art/flapBleft.png");
+  
+  PImage dorkAnim=loadImage("art/fullAnimLeft.png");
+  for (int i=0; i<4; i++) {
+    dorkFrameLeft[i]=dorkAnim.get(i*100, 0, 100, 100);
+  }
+  dorkAnim=loadImage("art/fullAnimRight.png");
+  for (int i=0; i<4; i++) {
+    dorkFrameRight[i]=dorkAnim.get(i*100, 0, 100, 100);
+  }
+  
   dorkExp=loadImage("art/dorkExp.png");
   plane=loadImage("art/plane.png");
   planeBoom=loadImage("art/planeBoom.png");
@@ -155,18 +169,16 @@ void loadStuff() {
   volume=loadImage("art/volume.png");
   mute=loadImage("art/mute.png");
   wrench=loadImage("art/wrench.png");
+  
+  PImage allReticlesAux=loadImage("art/reticlesB.png");
+  for(int i=0; i<cursor.length; i++){
+   cursor[i]=allReticlesAux.get(i*20, 0, 20, 20); 
+  }
+  allReticlesAux=loadImage("art/reticlesW.png");
+  for(int i=0; i<cursor.length; i++){
+   whiteCursor[i]=allReticlesAux.get(i*20, 0, 20, 20); 
+  }
 
-  cursor[0]=loadImage("art/cursor1.png");
-  cursor[1]=loadImage("art/cursor2.png");
-  cursor[2]=loadImage("art/cursor3.png");
-  cursor[3]=loadImage("art/cursor4.png");
-  cursor[4]=loadImage("art/cursor5.png");
-
-  whiteCursor[0]=loadImage("art/cursor1W.png"); 
-  whiteCursor[1]=loadImage("art/cursor2W.png");
-  whiteCursor[2]=loadImage("art/cursor3W.png");
-  whiteCursor[3]=loadImage("art/cursor4W.png");
-  whiteCursor[4]=loadImage("art/cursor5W.png");
 
   QWER[0]=loadImage("art/Q.png");
   QWER[1]=loadImage("art/W.png");
@@ -183,6 +195,7 @@ void loadStuff() {
     userHealth[i]=loadImage("art/dorkIcon.png");
   }
   loadFlags();
+  loadJSONflags();
   loadHighScores();
 
   cooldowns[0]=10;//10
@@ -190,7 +203,7 @@ void loadStuff() {
   cooldowns[2]=45;//45
   cooldowns[3]=90;//90
 
-  threadDone=true;
+
   if (flags[1]) {
     startAmmo=25;
   } else {
@@ -198,6 +211,7 @@ void loadStuff() {
   }
   shotIndex=startAmmo;
   levelChoose();
+  threadDone=true;
 }
 
 void highScoreLeaderBoard() {
@@ -210,7 +224,7 @@ void highScoreLeaderBoard() {
 void checkScore(int num, int[] list, String[] nameList) {
   int[] auxN; 
   String[] auxS; 
-  for (int i=0; i<list.length; i++) {
+  for (int i=0; i<list.length; i++) {//bubble sort   sort with the new score
     if (num>=list[i]) {
       listPos=i; 
       auxN=splice(list, num, i); 

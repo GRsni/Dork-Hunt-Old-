@@ -31,28 +31,30 @@ PImage titlebaricon;
 PImage desktop;
 PImage bullet;
 PImage scoreboard;
-PImage flapAright;
-PImage flapBright;
-PImage flapAleft;
-PImage flapBleft;
+//PImage flapAright;
+//PImage flapBright;
+//PImage flapAleft;
+//PImage flapBleft;
 PImage dorkExp;
 PImage plane;
 PImage planeBoom;
 PImage volume;
 PImage mute;
 PImage wrench;
-PImage[] cursor=new PImage[5];
-PImage[] whiteCursor=new PImage[5];
+PImage[] cursor=new PImage[6];
+PImage[] whiteCursor=new PImage[6];
 PImage[] QWER = new PImage[4];
 PImage[] bossIm= new PImage[5];
 PImage[] userHealth=new PImage[10];
+PImage[] dorkFrameLeft=new PImage[4];
+PImage[] dorkFrameRight=new PImage[4];
 
 PFont scoreFont, ammoFont;
 String[] highScoresEasy;
 String[] highScoresHard;
 String[] scoreList=new String[10];
 int[] scoreNum=new int[10];
-boolean fullS=false;
+JSONObject flagsjson;
 boolean[] flags;//0=mute, 1=difficulty 2=Q 3=W 4=E 5=R 6=kill dorks 7=cursor type
 String name="";
 float[] cooldowns=new float[4];
@@ -75,7 +77,7 @@ int level=1;
 static int startAmmo;
 int score=0;
 float up=0.01;
-static float grav=.1;
+final static float grav=.1;
 float life=100;
 int listPos=0;
 int txtSize;
@@ -103,6 +105,7 @@ int time2=0;
 
 void setup() { 
   fullScreen();
+  //size(1200, 600);
 
   titlebaricon=loadImage("data/art/dorkIcon.png");
 
@@ -398,7 +401,7 @@ void drawGameState0() {
         stroke(0);
         strokeWeight(4);
         strokeCap(SQUARE);
-        line(width/2+aux.length()*20/2, 170, width/2+aux.length()*20/2, 210);
+        line(width/2+aux.length()*20.75/2, 170, width/2+aux.length()*20.75/2, 210);
       }
     }
     typing=true;
@@ -564,6 +567,9 @@ void drawGameState2() {
   fill(0);
   String s="User:"+name;
   text(s, 30, 60);
+  for (int i=0; i<dorkFrameLeft.length; i++) {
+    image(dorkFrameLeft[i], i*100, 100);
+  }
 
 
   Button w=new Button(true, 20+s.length()*23.5, 25, 36, 36, 4, 4, #000000, #484848);
@@ -1020,7 +1026,7 @@ void drawGameState6() {
   if (cursorRect.click(mouseX, mouseY, true)&&!clicked) {
     clicked=true;
     cursorType++;
-    if (cursorType>4) {
+    if (cursorType>cursor.length-1) {
       cursorType=0;
     }
   }
@@ -1208,7 +1214,9 @@ void levelType() {//spawn algorithm
   } else if (levelType==1) {
     if (!flags[1]) {
       if (frameCount%ceil(100/(.1*level+1))==0) {
-        dSpawn();
+        if (ducks.size()<2) {
+          dSpawn();
+        }
       }
       if (frameCount%(400+level*30)==0) {
         pSpawn();
